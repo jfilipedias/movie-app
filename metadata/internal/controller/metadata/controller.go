@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/jfilipedias/movie-app/metadata/internal/model"
 	"github.com/jfilipedias/movie-app/metadata/internal/repository"
+	model "github.com/jfilipedias/movie-app/metadata/pkg"
 )
 
 var ErrNotFound = errors.New("not found")
