@@ -72,5 +72,8 @@ func (h *Handler) PutRating(w http.ResponseWriter, r *http.Request) {
 
 	rating := &model.Rating{UserID: userID, Value: model.RatingValue(v)}
 	if err = h.ctrl.PutRating(r.Context(), recordID, recordType, rating); err != nil {
+		log.Printf("Controller put error: %v\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 }
