@@ -15,8 +15,9 @@ func Main() {
 	ctrl := metadata.New(repo)
 	h := httpHandler.New(ctrl)
 
-	http.Handle("/metadata", http.HandlerFunc(h.GetMetadata))
-	if err := http.ListenAndServe(":8081", nil); err != nil {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /metadata", h.GetMetadata)
+	if err := http.ListenAndServe(":8081", mux); err != nil {
 		panic(err)
 	}
 }

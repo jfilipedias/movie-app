@@ -1,4 +1,4 @@
-package memeory
+package memory
 
 import (
 	"context"
