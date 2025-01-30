@@ -26,3 +26,12 @@ func (r *Repository) Get(_ context.Context, recordID model.RecordID, recordType 
 	}
 	return ratings, nil
 }
+
+func (r *Repository) Put(_ context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
+	if _, ok := r.data[recordType]; !ok {
+		r.data[recordType] = map[model.RecordID][]model.Rating{}
+	}
+
+	r.data[recordType][recordID] = append(r.data[recordType][recordID], *rating)
+	return nil
+}
