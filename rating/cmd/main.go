@@ -9,7 +9,7 @@ import (
 	"github.com/jfilipedias/movie-app/rating/internal/repository/memory"
 )
 
-func Main() {
+func main() {
 	log.Println("Starting the rating service")
 	repo := memory.New()
 	ctrl := rating.New(repo)

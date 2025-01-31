@@ -9,7 +9,7 @@ import (
 	"github.com/jfilipedias/movie-app/metadata/internal/repository/memory"
 )
 
-func Main() {
+func main() {
 	log.Print("Starting the movie metadata service")
 	repo := memory.New()
 	ctrl := metadata.New(repo)
