@@ -17,7 +17,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /rating", h.GetAggregatedRating)
-	mux.HandleFunc("GET /rating", h.GetAggregatedRating)
+	mux.HandleFunc("PUT /rating", h.PutRating)
 	if err := http.ListenAndServe(":8082", mux); err != nil {
 		panic(err)
 	}
