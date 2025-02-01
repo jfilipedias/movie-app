@@ -6,20 +6,20 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jfilipedias/movie-app/movie/internal/controller/movie"
+	"github.com/jfilipedias/movie-app/movie/internal/service/movie"
 )
 
 type Handler struct {
-	ctrl *movie.Controller
+	svc *movie.Service
 }
 
-func New(ctrl *movie.Controller) *Handler {
-	return &Handler{ctrl}
+func New(svc *movie.Service) *Handler {
+	return &Handler{svc}
 }
 
 func (h *Handler) GetMovieDetails(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
-	details, err := h.ctrl.Get(r.Context(), id)
+	details, err := h.svc.Get(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, movie.ErrNotFound) {
 			w.WriteHeader(http.StatusNotFound)

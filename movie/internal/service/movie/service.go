@@ -21,17 +21,17 @@ type ratingGateway interface {
 	PutRating(ctx context.Context, recordID ratingmodel.RecordID, recordType ratingmodel.RecordType, rating *ratingmodel.Rating) error
 }
 
-type Controller struct {
+type Service struct {
 	metadataGateway metadataGateway
 	ratingGateway   ratingGateway
 }
 
-func New(metadataGateway metadataGateway, ratingGateway ratingGateway) *Controller {
-	return &Controller{metadataGateway, ratingGateway}
+func NewService(metadataGateway metadataGateway, ratingGateway ratingGateway) *Service {
+	return &Service{metadataGateway, ratingGateway}
 }
 
-func (c *Controller) Get(ctx context.Context, id string) (*model.MovieDetails, error) {
-	metadata, err := c.metadataGateway.Get(ctx, id)
+func (s *Service) Get(ctx context.Context, id string) (*model.MovieDetails, error) {
+	metadata, err := s.metadataGateway.Get(ctx, id)
 	if err != nil {
 		if errors.Is(err, gateway.ErrNotFound) {
 			return nil, ErrNotFound
@@ -40,7 +40,7 @@ func (c *Controller) Get(ctx context.Context, id string) (*model.MovieDetails, e
 	}
 
 	details := &model.MovieDetails{Metadata: *metadata}
-	rating, err := c.ratingGateway.GetAggregatedRating(ctx, ratingmodel.RecordID(id), ratingmodel.RecordTypeMovie)
+	rating, err := s.ratingGateway.GetAggregatedRating(ctx, ratingmodel.RecordID(id), ratingmodel.RecordTypeMovie)
 	if err != nil {
 		return nil, err
 	}

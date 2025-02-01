@@ -27,7 +27,7 @@ func (g *Gateway) Get(ctx context.Context, id string) (*model.Metadata, error) {
 		return nil, err
 	}
 
-	url := fmt.Sprintf("http://%s/rating", addrs[rand.Intn(len(addrs))])
+	url := fmt.Sprintf("http://%s/metadata", addrs[rand.Intn(len(addrs))])
 	log.Printf("Calling metadata service. Request: GET %s", url)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)

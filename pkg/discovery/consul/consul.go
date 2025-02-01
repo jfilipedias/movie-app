@@ -51,7 +51,7 @@ func (r *Registry) Deregister(ctx context.Context, _ string, instanceID string) 
 	return r.client.Agent().ServiceDeregister(instanceID)
 }
 
-func (r *Registry) ServicesAddresses(ctx context.Context, serviceName string) ([]string, error) {
+func (r *Registry) ServiceAddresses(ctx context.Context, serviceName string) ([]string, error) {
 	entries, _, err := r.client.Health().Service(serviceName, "", true, nil)
 	if err != nil {
 		return nil, err

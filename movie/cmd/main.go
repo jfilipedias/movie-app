@@ -1,25 +1,60 @@
 package main
 
 import (
+	"context"
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
+	"time"
 
-	"github.com/jfilipedias/movie-app/movie/internal/controller/movie"
 	metadatagateway "github.com/jfilipedias/movie-app/movie/internal/gateway/metadata/http"
 	ratinggateway "github.com/jfilipedias/movie-app/movie/internal/gateway/rating/http"
 	httphandler "github.com/jfilipedias/movie-app/movie/internal/handler/http"
+	"github.com/jfilipedias/movie-app/movie/internal/service/movie"
+	"github.com/jfilipedias/movie-app/pkg/discovery"
+	"github.com/jfilipedias/movie-app/pkg/discovery/consul"
 )
 
+var serviceName = "movie"
+
 func main() {
-	log.Print("Starting the movie service")
-	metadataGateway := metadatagateway.NewGateway("localhost:8081")
-	ratingGateway := ratinggateway.NewGateway("localhost:8082")
-	ctrl := movie.New(metadataGateway, ratingGateway)
-	h := httphandler.New(ctrl)
+	var port int
+	flag.IntVar(&port, "port", 8083, "API handler port")
+	flag.Parse()
+	log.Printf("Starting the movie service on port %d\n", port)
+
+	registry, err := consul.NewRegistry("localhost:8500")
+	if err != nil {
+		panic(err)
+	}
+
+	ctx := context.Background()
+	instanceID := discovery.GenerateInstanceID(serviceName)
+	hostPort := fmt.Sprintf("localhost:%d", port)
+	if err = registry.Register(ctx, instanceID, serviceName, hostPort); err != nil {
+		panic(err)
+	}
+
+	go func() {
+		for {
+			if err := registry.ReportHealthyState(serviceName, instanceID); err != nil {
+				log.Printf("Failed to report healthy state:  %v\n", err)
+			}
+			time.Sleep(1 * time.Second)
+		}
+	}()
+
+	defer registry.Deregister(ctx, serviceName, instanceID)
+
+	metadataGateway := metadatagateway.NewGateway(registry)
+	ratingGateway := ratinggateway.NewGateway(registry)
+	svc := movie.NewService(metadataGateway, ratingGateway)
+	h := httphandler.New(svc)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /movie", h.GetMovieDetails)
-	if err := http.ListenAndServe(":8083", mux); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), mux); err != nil {
 		panic(err)
 	}
 }
