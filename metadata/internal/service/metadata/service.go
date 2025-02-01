@@ -14,16 +14,16 @@ type metadataRepository interface {
 	Get(ctx context.Context, id string) (*model.Metadata, error)
 }
 
-type Controller struct {
+type Service struct {
 	repo metadataRepository
 }
 
-func New(repo metadataRepository) *Controller {
-	return &Controller{repo}
+func NewService(repo metadataRepository) *Service {
+	return &Service{repo}
 }
 
-func (c *Controller) Get(ctx context.Context, id string) (*model.Metadata, error) {
-	res, err := c.repo.Get(ctx, id)
+func (s *Service) Get(ctx context.Context, id string) (*model.Metadata, error) {
+	res, err := s.repo.Get(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return nil, ErrNotFound

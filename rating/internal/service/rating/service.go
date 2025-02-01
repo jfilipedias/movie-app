@@ -15,16 +15,16 @@ type ratingRepository interface {
 	Put(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error
 }
 
-type Controller struct {
+type Service struct {
 	repo ratingRepository
 }
 
-func New(repo ratingRepository) *Controller {
-	return &Controller{repo}
+func NewService(repo ratingRepository) *Service {
+	return &Service{repo}
 }
 
-func (c *Controller) GetAggregatedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
-	ratings, err := c.repo.Get(ctx, recordID, recordType)
+func (s *Service) GetAggregatedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
+	ratings, err := s.repo.Get(ctx, recordID, recordType)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
 			return 0, ErrNotFound
@@ -41,6 +41,6 @@ func (c *Controller) GetAggregatedRating(ctx context.Context, recordID model.Rec
 	return sum / float64(len(ratings)), nil
 }
 
-func (c *Controller) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
-	return c.repo.Put(ctx, recordID, recordType, rating)
+func (s *Service) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
+	return s.repo.Put(ctx, recordID, recordType, rating)
 }

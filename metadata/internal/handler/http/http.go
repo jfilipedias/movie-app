@@ -6,25 +6,25 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jfilipedias/movie-app/metadata/internal/controller/metadata"
+	"github.com/jfilipedias/movie-app/metadata/internal/service/metadata"
 )
 
 type Handler struct {
-	ctrl *metadata.Controller
+	svc *metadata.Service
 }
 
-func New(ctrl *metadata.Controller) *Handler {
-	return &Handler{ctrl}
+func New(svc *metadata.Service) *Handler {
+	return &Handler{svc}
 }
 
-func (h *Handler) GetMetadata(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) GetMetadataByID(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	m, err := h.ctrl.Get(r.Context(), id)
+	m, err := h.svc.Get(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, metadata.ErrNotFound) {
 			w.WriteHeader(http.StatusNotFound)

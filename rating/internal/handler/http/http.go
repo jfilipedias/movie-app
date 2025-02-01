@@ -7,16 +7,16 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/jfilipedias/movie-app/rating/internal/controller/rating"
+	"github.com/jfilipedias/movie-app/rating/internal/service/rating"
 	model "github.com/jfilipedias/movie-app/rating/pkg"
 )
 
 type Handler struct {
-	ctrl *rating.Controller
+	svc *rating.Service
 }
 
-func New(ctrl *rating.Controller) *Handler {
-	return &Handler{ctrl}
+func New(svc *rating.Service) *Handler {
+	return &Handler{svc}
 }
 
 func (h *Handler) GetAggregatedRating(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +32,7 @@ func (h *Handler) GetAggregatedRating(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	v, err := h.ctrl.GetAggregatedRating(r.Context(), recordID, recordType)
+	v, err := h.svc.GetAggregatedRating(r.Context(), recordID, recordType)
 	if err != nil {
 		if errors.Is(err, rating.ErrNotFound) {
 			w.WriteHeader(http.StatusNotFound)
@@ -71,7 +71,7 @@ func (h *Handler) PutRating(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rating := &model.Rating{UserID: userID, Value: model.RatingValue(v)}
-	if err = h.ctrl.PutRating(r.Context(), recordID, recordType, rating); err != nil {
+	if err = h.svc.PutRating(r.Context(), recordID, recordType, rating); err != nil {
 		log.Printf("Controller put error: %v\n", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return

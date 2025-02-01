@@ -19,7 +19,7 @@ type Registry struct {
 	serviceAddrs map[string]map[string]*serviceInstance
 }
 
-func New() *Registry {
+func NewRegistry() *Registry {
 	return &Registry{serviceAddrs: map[string]map[string]*serviceInstance{}}
 }
 
@@ -47,22 +47,6 @@ func (r *Registry) Deregister(ctx context.Context, serviceName, instanceID strin
 	return nil
 }
 
-func (r *Registry) ReportHealthyState(serviceName, instanceID string) error {
-	r.Lock()
-	defer r.Unlock()
-
-	if _, ok := r.serviceAddrs[serviceName]; !ok {
-		return errors.New("service is not registered yet")
-	}
-
-	if _, ok := r.serviceAddrs[serviceName][instanceID]; !ok {
-		return errors.New("service instance is not registered yet")
-	}
-
-	r.serviceAddrs[serviceName][instanceID].lastActive = time.Now()
-	return nil
-}
-
 func (r *Registry) ServiceAddresses(ctx context.Context, serviceName string) ([]string, error) {
 	r.RLock()
 	defer r.RUnlock()
@@ -79,4 +63,20 @@ func (r *Registry) ServiceAddresses(ctx context.Context, serviceName string) ([]
 		res = append(res, i.hostPort)
 	}
 	return res, nil
+}
+
+func (r *Registry) ReportHealthyState(serviceName, instanceID string) error {
+	r.Lock()
+	defer r.Unlock()
+
+	if _, ok := r.serviceAddrs[serviceName]; !ok {
+		return errors.New("service is not registered yet")
+	}
+
+	if _, ok := r.serviceAddrs[serviceName][instanceID]; !ok {
+		return errors.New("service instance is not registered yet")
+	}
+
+	r.serviceAddrs[serviceName][instanceID].lastActive = time.Now()
+	return nil
 }

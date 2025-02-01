@@ -4,22 +4,33 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
+	"math/rand"
 	"net/http"
 
 	model "github.com/jfilipedias/movie-app/metadata/pkg"
 	"github.com/jfilipedias/movie-app/movie/internal/gateway"
+	"github.com/jfilipedias/movie-app/pkg/discovery"
 )
 
 type Gateway struct {
-	addr string
+	registry discovery.Registry
 }
 
-func New(addr string) *Gateway {
-	return &Gateway{addr}
+func NewGateway(registry discovery.Registry) *Gateway {
+	return &Gateway{registry}
 }
 
 func (g *Gateway) Get(ctx context.Context, id string) (*model.Metadata, error) {
-	req, err := http.NewRequest(http.MethodGet, g.addr+"/metadata", nil)
+	addrs, err := g.registry.ServiceAddresses(ctx, "metadata")
+	if err != nil {
+		return nil, err
+	}
+
+	url := fmt.Sprintf("http://%s/rating", addrs[rand.Intn(len(addrs))])
+	log.Printf("Calling metadata service. Request: GET %s", url)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}

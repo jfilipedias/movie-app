@@ -11,7 +11,7 @@ type Repository struct {
 	data map[model.RecordType]map[model.RecordID][]model.Rating
 }
 
-func New() *Repository {
+func NewRepository() *Repository {
 	return &Repository{data: map[model.RecordType]map[model.RecordID][]model.Rating{}}
 }
 
