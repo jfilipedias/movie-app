@@ -20,7 +20,7 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 Generate the protobuf code: 
 
 ```sh
-protoc -I=api --go_out=. movie.proto
+protoc -I=api --go_out=. --go-grpc_out=. movie.proto
 ```
 
 ### Docker
