@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/jfilipedias/movie-app/rating/internal/repository"
-	model "github.com/jfilipedias/movie-app/rating/pkg"
+	"github.com/jfilipedias/movie-app/rating/pkg/model"
 )
 
 type Repository struct {

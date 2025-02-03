@@ -1,4 +1,4 @@
-package http
+package handler
 
 import (
 	"encoding/json"
@@ -6,18 +6,18 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jfilipedias/movie-app/metadata/internal/service/metadata"
+	"github.com/jfilipedias/movie-app/metadata/internal/service"
 )
 
-type Handler struct {
-	svc *metadata.Service
+type HttpHandler struct {
+	svc *service.MetadataService
 }
 
-func New(svc *metadata.Service) *Handler {
-	return &Handler{svc}
+func NewHttpHandler(svc *service.MetadataService) *HttpHandler {
+	return &HttpHandler{svc}
 }
 
-func (h *Handler) GetMetadataByID(w http.ResponseWriter, r *http.Request) {
+func (h *HttpHandler) GetMetadataByID(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -26,7 +26,7 @@ func (h *Handler) GetMetadataByID(w http.ResponseWriter, r *http.Request) {
 
 	m, err := h.svc.Get(r.Context(), id)
 	if err != nil {
-		if errors.Is(err, metadata.ErrNotFound) {
+		if errors.Is(err, service.ErrNotFound) {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}

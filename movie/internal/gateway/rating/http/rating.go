@@ -10,7 +10,7 @@ import (
 
 	"github.com/jfilipedias/movie-app/movie/internal/gateway"
 	"github.com/jfilipedias/movie-app/pkg/discovery"
-	model "github.com/jfilipedias/movie-app/rating/pkg"
+	"github.com/jfilipedias/movie-app/rating/pkg/model"
 )
 
 type Gateway struct {

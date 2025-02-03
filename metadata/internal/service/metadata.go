@@ -1,11 +1,11 @@
-package metadata
+package service
 
 import (
 	"context"
 	"errors"
 
 	"github.com/jfilipedias/movie-app/metadata/internal/repository"
-	model "github.com/jfilipedias/movie-app/metadata/pkg"
+	"github.com/jfilipedias/movie-app/metadata/pkg/model"
 )
 
 var ErrNotFound = errors.New("not found")
@@ -14,15 +14,15 @@ type metadataRepository interface {
 	Get(ctx context.Context, id string) (*model.Metadata, error)
 }
 
-type Service struct {
+type MetadataService struct {
 	repo metadataRepository
 }
 
-func NewService(repo metadataRepository) *Service {
-	return &Service{repo}
+func NewMetadataService(repo metadataRepository) *MetadataService {
+	return &MetadataService{repo}
 }
 
-func (s *Service) Get(ctx context.Context, id string) (*model.Metadata, error) {
+func (s *MetadataService) Get(ctx context.Context, id string) (*model.Metadata, error) {
 	res, err := s.repo.Get(ctx, id)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {

@@ -8,9 +8,9 @@ import (
 	"net/http"
 	"time"
 
-	httpHandler "github.com/jfilipedias/movie-app/metadata/internal/handler/http"
+	"github.com/jfilipedias/movie-app/metadata/internal/handler"
 	"github.com/jfilipedias/movie-app/metadata/internal/repository/memory"
-	"github.com/jfilipedias/movie-app/metadata/internal/service/metadata"
+	"github.com/jfilipedias/movie-app/metadata/internal/service"
 	"github.com/jfilipedias/movie-app/pkg/discovery"
 	"github.com/jfilipedias/movie-app/pkg/discovery/consul"
 )
@@ -47,8 +47,8 @@ func main() {
 	defer registry.Deregister(ctx, serviceName, instanceID)
 
 	repo := memory.NewRepository()
-	svc := metadata.NewService(repo)
-	h := httpHandler.New(svc)
+	svc := service.NewMetadataService(repo)
+	h := handler.NewHttpHandler(svc)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /metadata", h.GetMetadataByID)

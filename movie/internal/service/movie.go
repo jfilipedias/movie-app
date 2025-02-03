@@ -1,13 +1,13 @@
-package movie
+package service
 
 import (
 	"context"
 	"errors"
 
-	metadatamodel "github.com/jfilipedias/movie-app/metadata/pkg"
+	metadatamodel "github.com/jfilipedias/movie-app/metadata/pkg/model"
 	"github.com/jfilipedias/movie-app/movie/internal/gateway"
-	model "github.com/jfilipedias/movie-app/movie/pkg"
-	ratingmodel "github.com/jfilipedias/movie-app/rating/pkg"
+	"github.com/jfilipedias/movie-app/movie/pkg/model"
+	ratingmodel "github.com/jfilipedias/movie-app/rating/pkg/model"
 )
 
 var ErrNotFound = errors.New("movie metadata not found")
@@ -21,16 +21,16 @@ type ratingGateway interface {
 	PutRating(ctx context.Context, recordID ratingmodel.RecordID, recordType ratingmodel.RecordType, rating *ratingmodel.Rating) error
 }
 
-type Service struct {
+type MovieService struct {
 	metadataGateway metadataGateway
 	ratingGateway   ratingGateway
 }
 
-func NewService(metadataGateway metadataGateway, ratingGateway ratingGateway) *Service {
-	return &Service{metadataGateway, ratingGateway}
+func NewMovieService(metadataGateway metadataGateway, ratingGateway ratingGateway) *MovieService {
+	return &MovieService{metadataGateway, ratingGateway}
 }
 
-func (s *Service) Get(ctx context.Context, id string) (*model.MovieDetails, error) {
+func (s *MovieService) Get(ctx context.Context, id string) (*model.MovieDetails, error) {
 	metadata, err := s.metadataGateway.Get(ctx, id)
 	if err != nil {
 		if errors.Is(err, gateway.ErrNotFound) {

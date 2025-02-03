@@ -1,4 +1,4 @@
-package http
+package handler
 
 import (
 	"encoding/json"
@@ -7,19 +7,19 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/jfilipedias/movie-app/rating/internal/service/rating"
-	model "github.com/jfilipedias/movie-app/rating/pkg"
+	"github.com/jfilipedias/movie-app/rating/internal/service"
+	"github.com/jfilipedias/movie-app/rating/pkg/model"
 )
 
-type Handler struct {
-	svc *rating.Service
+type HttpHandler struct {
+	svc *service.RatingService
 }
 
-func New(svc *rating.Service) *Handler {
-	return &Handler{svc}
+func NewHttpHandler(svc *service.RatingService) *HttpHandler {
+	return &HttpHandler{svc}
 }
 
-func (h *Handler) GetAggregatedRating(w http.ResponseWriter, r *http.Request) {
+func (h *HttpHandler) GetAggregatedRating(w http.ResponseWriter, r *http.Request) {
 	recordID := model.RecordID(r.FormValue("id"))
 	if recordID == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -34,7 +34,7 @@ func (h *Handler) GetAggregatedRating(w http.ResponseWriter, r *http.Request) {
 
 	v, err := h.svc.GetAggregatedRating(r.Context(), recordID, recordType)
 	if err != nil {
-		if errors.Is(err, rating.ErrNotFound) {
+		if errors.Is(err, service.ErrNotFound) {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
@@ -50,7 +50,7 @@ func (h *Handler) GetAggregatedRating(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handler) PutRating(w http.ResponseWriter, r *http.Request) {
+func (h *HttpHandler) PutRating(w http.ResponseWriter, r *http.Request) {
 	recordID := model.RecordID(r.FormValue("id"))
 	if recordID == "" {
 		w.WriteHeader(http.StatusBadRequest)

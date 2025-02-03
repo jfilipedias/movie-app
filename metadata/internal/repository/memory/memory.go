@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/jfilipedias/movie-app/metadata/internal/repository"
-	model "github.com/jfilipedias/movie-app/metadata/pkg"
+	"github.com/jfilipedias/movie-app/metadata/pkg/model"
 )
 
 type Repository struct {

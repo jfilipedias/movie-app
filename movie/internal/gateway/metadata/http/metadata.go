@@ -8,7 +8,7 @@ import (
 	"math/rand"
 	"net/http"
 
-	model "github.com/jfilipedias/movie-app/metadata/pkg"
+	"github.com/jfilipedias/movie-app/metadata/pkg/model"
 	"github.com/jfilipedias/movie-app/movie/internal/gateway"
 	"github.com/jfilipedias/movie-app/pkg/discovery"
 )

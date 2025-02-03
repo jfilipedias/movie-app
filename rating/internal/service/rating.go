@@ -1,11 +1,11 @@
-package rating
+package service
 
 import (
 	"context"
 	"errors"
 
 	"github.com/jfilipedias/movie-app/rating/internal/repository"
-	model "github.com/jfilipedias/movie-app/rating/pkg"
+	"github.com/jfilipedias/movie-app/rating/pkg/model"
 )
 
 var ErrNotFound = errors.New("ratings not found for a record")
@@ -15,15 +15,15 @@ type ratingRepository interface {
 	Put(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error
 }
 
-type Service struct {
+type RatingService struct {
 	repo ratingRepository
 }
 
-func NewService(repo ratingRepository) *Service {
-	return &Service{repo}
+func NewRatingService(repo ratingRepository) *RatingService {
+	return &RatingService{repo}
 }
 
-func (s *Service) GetAggregatedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
+func (s *RatingService) GetAggregatedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
 	ratings, err := s.repo.Get(ctx, recordID, recordType)
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
@@ -41,6 +41,6 @@ func (s *Service) GetAggregatedRating(ctx context.Context, recordID model.Record
 	return sum / float64(len(ratings)), nil
 }
 
-func (s *Service) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
+func (s *RatingService) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
 	return s.repo.Put(ctx, recordID, recordType, rating)
 }

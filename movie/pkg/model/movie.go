@@ -1,6 +1,6 @@
 package model
 
-import model "github.com/jfilipedias/movie-app/metadata/pkg"
+import "github.com/jfilipedias/movie-app/metadata/pkg/model"
 
 type MovieDetails struct {
 	Rating   *float64       `json:"rating,omitempty"`

@@ -1,4 +1,4 @@
-package http
+package handler
 
 import (
 	"encoding/json"
@@ -6,22 +6,22 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jfilipedias/movie-app/movie/internal/service/movie"
+	"github.com/jfilipedias/movie-app/movie/internal/service"
 )
 
-type Handler struct {
-	svc *movie.Service
+type HttpHandler struct {
+	svc *service.MovieService
 }
 
-func New(svc *movie.Service) *Handler {
-	return &Handler{svc}
+func NewHttpHandler(svc *service.MovieService) *HttpHandler {
+	return &HttpHandler{svc}
 }
 
-func (h *Handler) GetMovieDetails(w http.ResponseWriter, r *http.Request) {
+func (h *HttpHandler) GetMovieDetails(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
 	details, err := h.svc.Get(r.Context(), id)
 	if err != nil {
-		if errors.Is(err, movie.ErrNotFound) {
+		if errors.Is(err, service.ErrNotFound) {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}

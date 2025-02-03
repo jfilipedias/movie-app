@@ -10,8 +10,8 @@ import (
 
 	metadatagateway "github.com/jfilipedias/movie-app/movie/internal/gateway/metadata/http"
 	ratinggateway "github.com/jfilipedias/movie-app/movie/internal/gateway/rating/http"
-	httphandler "github.com/jfilipedias/movie-app/movie/internal/handler/http"
-	"github.com/jfilipedias/movie-app/movie/internal/service/movie"
+	"github.com/jfilipedias/movie-app/movie/internal/handler"
+	"github.com/jfilipedias/movie-app/movie/internal/service"
 	"github.com/jfilipedias/movie-app/pkg/discovery"
 	"github.com/jfilipedias/movie-app/pkg/discovery/consul"
 )
@@ -49,8 +49,8 @@ func main() {
 
 	metadataGateway := metadatagateway.NewGateway(registry)
 	ratingGateway := ratinggateway.NewGateway(registry)
-	svc := movie.NewService(metadataGateway, ratingGateway)
-	h := httphandler.New(svc)
+	svc := service.NewMovieService(metadataGateway, ratingGateway)
+	h := handler.NewHttpHandler(svc)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /movie", h.GetMovieDetails)

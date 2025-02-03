@@ -10,9 +10,9 @@ import (
 
 	"github.com/jfilipedias/movie-app/pkg/discovery"
 	"github.com/jfilipedias/movie-app/pkg/discovery/consul"
-	httphandler "github.com/jfilipedias/movie-app/rating/internal/handler/http"
+	"github.com/jfilipedias/movie-app/rating/internal/handler"
 	"github.com/jfilipedias/movie-app/rating/internal/repository/memory"
-	"github.com/jfilipedias/movie-app/rating/internal/service/rating"
+	"github.com/jfilipedias/movie-app/rating/internal/service"
 )
 
 var serviceName = "rating"
@@ -47,8 +47,8 @@ func main() {
 	defer registry.Deregister(ctx, serviceName, instanceID)
 
 	repo := memory.NewRepository()
-	svc := rating.NewService(repo)
-	h := httphandler.New(svc)
+	svc := service.NewRatingService(repo)
+	h := handler.NewHttpHandler(svc)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /rating", h.GetAggregatedRating)
