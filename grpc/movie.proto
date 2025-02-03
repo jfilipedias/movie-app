@@ -27,7 +27,7 @@ service MetadataService {
 
 message GetAggregattedRatingRequest {
   string record_id = 1;
-  int32 record_type = 2;
+  string record_type = 2;
 }
 
 message GetAggregattedRatingResponse {
@@ -37,7 +37,7 @@ message GetAggregattedRatingResponse {
 message PutRattingRequest {
   string user_id = 1;
   string record_id = 2;
-  int32 record_type = 3;
+  string record_type = 3;
   int32 rating_value = 4;
 }
 
