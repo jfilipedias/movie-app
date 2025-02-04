@@ -13,11 +13,11 @@ import (
 var ErrNotFound = errors.New("movie metadata not found")
 
 type metadataGateway interface {
-	GetMovieDetails(ctx context.Context, id string) (*metadatamodel.Metadata, error)
+	GetMetadataByID(ctx context.Context, id string) (*metadatamodel.Metadata, error)
 }
 
 type ratingGateway interface {
-	GetAggregatedRating(ctx context.Context, recordID ratingmodel.RecordID, recordType ratingmodel.RecordType) (float64, error)
+	GetAggregattedRating(ctx context.Context, recordID ratingmodel.RecordID, recordType ratingmodel.RecordType) (float64, error)
 	PutRating(ctx context.Context, recordID ratingmodel.RecordID, recordType ratingmodel.RecordType, rating *ratingmodel.Rating) error
 }
 
@@ -31,7 +31,7 @@ func NewMovieService(metadataGateway metadataGateway, ratingGateway ratingGatewa
 }
 
 func (s *MovieService) GetMovieDetails(ctx context.Context, id string) (*model.MovieDetails, error) {
-	metadata, err := s.metadataGateway.GetMovieDetails(ctx, id)
+	metadata, err := s.metadataGateway.GetMetadataByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, gateway.ErrNotFound) {
 			return nil, ErrNotFound
@@ -40,7 +40,7 @@ func (s *MovieService) GetMovieDetails(ctx context.Context, id string) (*model.M
 	}
 
 	details := &model.MovieDetails{Metadata: *metadata}
-	rating, err := s.ratingGateway.GetAggregatedRating(ctx, ratingmodel.RecordID(id), ratingmodel.RecordTypeMovie)
+	rating, err := s.ratingGateway.GetAggregattedRating(ctx, ratingmodel.RecordID(id), ratingmodel.RecordTypeMovie)
 	if err != nil {
 		return nil, err
 	}

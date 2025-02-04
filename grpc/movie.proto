@@ -13,16 +13,16 @@ message MovieDetails {
   Metadata metadata = 2;
 }
 
-message GetMetadataRequest {
+message GetMetadataByIdRequest {
   string movie_id = 1;
 }
 
-message GetMetadataResponse {
+message GetMetadataByIdResponse {
   Metadata metadata = 1;
 }
 
 service MetadataService {
-  rpc GetMetadata(GetMetadataRequest) returns (GetMetadataResponse);
+  rpc GetMetadataById(GetMetadataByIdRequest) returns (GetMetadataByIdResponse);
 }
 
 message GetAggregattedRatingRequest {

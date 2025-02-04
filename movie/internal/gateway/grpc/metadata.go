@@ -9,15 +9,15 @@ import (
 	"github.com/jfilipedias/movie-app/pkg/discovery"
 )
 
-type GrpcGateway struct {
+type MetadataGrpcGateway struct {
 	registry discovery.Registry
 }
 
-func New(registry discovery.Registry) *GrpcGateway {
-	return &GrpcGateway{registry}
+func NewMetadataGrpcGateway(registry discovery.Registry) *MetadataGrpcGateway {
+	return &MetadataGrpcGateway{registry}
 }
 
-func (g *GrpcGateway) GetMovieDetails(ctx context.Context, id string) (*model.Metadata, error) {
+func (g *MetadataGrpcGateway) GetMetadataByID(ctx context.Context, id string) (*model.Metadata, error) {
 	conn, err := grpcutil.ServiceConnection(ctx, "metadata", g.registry)
 	if err != nil {
 		return nil, err
@@ -25,7 +25,7 @@ func (g *GrpcGateway) GetMovieDetails(ctx context.Context, id string) (*model.Me
 	defer conn.Close()
 
 	client := gen.NewMetadataServiceClient(conn)
-	res, err := client.GetMetadata(ctx, &gen.GetMetadataRequest{MovieId: id})
+	res, err := client.GetMetadataById(ctx, &gen.GetMetadataByIdRequest{MovieId: id})
 	if err != nil {
 		return nil, err
 	}

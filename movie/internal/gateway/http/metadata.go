@@ -13,15 +13,15 @@ import (
 	"github.com/jfilipedias/movie-app/pkg/discovery"
 )
 
-type MetadataGateway struct {
+type MetadataHttpGateway struct {
 	registry discovery.Registry
 }
 
-func NewMetadataGateway(registry discovery.Registry) *MetadataGateway {
-	return &MetadataGateway{registry}
+func NewMetadataHttpGateway(registry discovery.Registry) *MetadataHttpGateway {
+	return &MetadataHttpGateway{registry}
 }
 
-func (g *MetadataGateway) GetMovieDetails(ctx context.Context, id string) (*model.Metadata, error) {
+func (g *MetadataHttpGateway) GetMovieDetails(ctx context.Context, id string) (*model.Metadata, error) {
 	addrs, err := g.registry.ServiceAddresses(ctx, "metadata")
 	if err != nil {
 		return nil, err

@@ -20,7 +20,7 @@ func NewGrpcHandler(svc *service.MetadataService) *GrpcHandler {
 	return &GrpcHandler{svc: svc}
 }
 
-func (h *GrpcHandler) GetMetadata(ctx context.Context, r *gen.GetMetadataRequest) (*gen.GetMetadataResponse, error) {
+func (h *GrpcHandler) GetMetadataByID(ctx context.Context, r *gen.GetMetadataByIdRequest) (*gen.GetMetadataByIdResponse, error) {
 	if r == nil || r.MovieId == "" {
 		return nil, status.Error(codes.InvalidArgument, "nil request or empty movie id")
 	}
@@ -33,5 +33,5 @@ func (h *GrpcHandler) GetMetadata(ctx context.Context, r *gen.GetMetadataRequest
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &gen.GetMetadataResponse{Metadata: model.MetadataToProto(m)}, nil
+	return &gen.GetMetadataByIdResponse{Metadata: model.MetadataToProto(m)}, nil
 }

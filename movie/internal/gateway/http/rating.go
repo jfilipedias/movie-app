@@ -13,15 +13,15 @@ import (
 	"github.com/jfilipedias/movie-app/rating/pkg/model"
 )
 
-type RatingGateway struct {
+type RatingHttpGateway struct {
 	registry discovery.Registry
 }
 
-func NewRatingGateway(registry discovery.Registry) *RatingGateway {
-	return &RatingGateway{registry}
+func NewRatingHttpGateway(registry discovery.Registry) *RatingHttpGateway {
+	return &RatingHttpGateway{registry}
 }
 
-func (g *RatingGateway) GetAggregatedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
+func (g *RatingHttpGateway) GetAggregattedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
 	addrs, err := g.registry.ServiceAddresses(ctx, "rating")
 	if err != nil {
 		return 0, err
@@ -60,7 +60,7 @@ func (g *RatingGateway) GetAggregatedRating(ctx context.Context, recordID model.
 	return v, nil
 }
 
-func (g *RatingGateway) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
+func (g *RatingHttpGateway) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
 	addrs, err := g.registry.ServiceAddresses(ctx, "rating")
 	if err != nil {
 		return err

@@ -15,6 +15,7 @@ import (
 	"github.com/jfilipedias/movie-app/rating/internal/repository/memory"
 	"github.com/jfilipedias/movie-app/rating/internal/service"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 var serviceName = "rating"
@@ -52,12 +53,15 @@ func main() {
 	svc := service.NewRatingService(repo)
 	h := handler.NewGrpcHandler(svc)
 
-	lis, err := net.Listen("tcp", "localhost:8082")
+	lis, err := net.Listen("tcp", hostPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
 	srv := grpc.NewServer()
+	reflection.Register(srv)
 	gen.RegisterRatingServiceServer(srv, h)
-	srv.Serve(lis)
+	if err := srv.Serve(lis); err != nil {
+		panic(err)
+	}
 }
