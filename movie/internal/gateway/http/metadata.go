@@ -1,4 +1,4 @@
-package http
+package gateway
 
 import (
 	"context"
@@ -13,15 +13,15 @@ import (
 	"github.com/jfilipedias/movie-app/pkg/discovery"
 )
 
-type Gateway struct {
+type MetadataGateway struct {
 	registry discovery.Registry
 }
 
-func NewGateway(registry discovery.Registry) *Gateway {
-	return &Gateway{registry}
+func NewMetadataGateway(registry discovery.Registry) *MetadataGateway {
+	return &MetadataGateway{registry}
 }
 
-func (g *Gateway) Get(ctx context.Context, id string) (*model.Metadata, error) {
+func (g *MetadataGateway) GetMovieDetails(ctx context.Context, id string) (*model.Metadata, error) {
 	addrs, err := g.registry.ServiceAddresses(ctx, "metadata")
 	if err != nil {
 		return nil, err

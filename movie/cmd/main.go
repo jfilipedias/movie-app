@@ -8,8 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	metadatagateway "github.com/jfilipedias/movie-app/movie/internal/gateway/metadata/http"
-	ratinggateway "github.com/jfilipedias/movie-app/movie/internal/gateway/rating/http"
+	gateway "github.com/jfilipedias/movie-app/movie/internal/gateway/http"
 	"github.com/jfilipedias/movie-app/movie/internal/handler"
 	"github.com/jfilipedias/movie-app/movie/internal/service"
 	"github.com/jfilipedias/movie-app/pkg/discovery"
@@ -47,8 +46,8 @@ func main() {
 
 	defer registry.Deregister(ctx, serviceName, instanceID)
 
-	metadataGateway := metadatagateway.NewGateway(registry)
-	ratingGateway := ratinggateway.NewGateway(registry)
+	metadataGateway := gateway.NewMetadataGateway(registry)
+	ratingGateway := gateway.NewRatingGateway(registry)
 	svc := service.NewMovieService(metadataGateway, ratingGateway)
 	h := handler.NewHttpHandler(svc)
 

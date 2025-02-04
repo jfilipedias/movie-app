@@ -19,7 +19,7 @@ func NewHttpHandler(svc *service.MovieService) *HttpHandler {
 
 func (h *HttpHandler) GetMovieDetails(w http.ResponseWriter, r *http.Request) {
 	id := r.FormValue("id")
-	details, err := h.svc.Get(r.Context(), id)
+	details, err := h.svc.GetMovieDetails(r.Context(), id)
 	if err != nil {
 		if errors.Is(err, service.ErrNotFound) {
 			w.WriteHeader(http.StatusNotFound)

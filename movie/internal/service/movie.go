@@ -13,7 +13,7 @@ import (
 var ErrNotFound = errors.New("movie metadata not found")
 
 type metadataGateway interface {
-	Get(ctx context.Context, id string) (*metadatamodel.Metadata, error)
+	GetMovieDetails(ctx context.Context, id string) (*metadatamodel.Metadata, error)
 }
 
 type ratingGateway interface {
@@ -30,8 +30,8 @@ func NewMovieService(metadataGateway metadataGateway, ratingGateway ratingGatewa
 	return &MovieService{metadataGateway, ratingGateway}
 }
 
-func (s *MovieService) Get(ctx context.Context, id string) (*model.MovieDetails, error) {
-	metadata, err := s.metadataGateway.Get(ctx, id)
+func (s *MovieService) GetMovieDetails(ctx context.Context, id string) (*model.MovieDetails, error) {
+	metadata, err := s.metadataGateway.GetMovieDetails(ctx, id)
 	if err != nil {
 		if errors.Is(err, gateway.ErrNotFound) {
 			return nil, ErrNotFound

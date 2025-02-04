@@ -1,4 +1,4 @@
-package http
+package gateway
 
 import (
 	"context"
@@ -13,15 +13,15 @@ import (
 	"github.com/jfilipedias/movie-app/rating/pkg/model"
 )
 
-type Gateway struct {
+type RatingGateway struct {
 	registry discovery.Registry
 }
 
-func NewGateway(registry discovery.Registry) *Gateway {
-	return &Gateway{registry}
+func NewRatingGateway(registry discovery.Registry) *RatingGateway {
+	return &RatingGateway{registry}
 }
 
-func (g *Gateway) GetAggregatedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
+func (g *RatingGateway) GetAggregatedRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType) (float64, error) {
 	addrs, err := g.registry.ServiceAddresses(ctx, "rating")
 	if err != nil {
 		return 0, err
@@ -60,7 +60,7 @@ func (g *Gateway) GetAggregatedRating(ctx context.Context, recordID model.Record
 	return v, nil
 }
 
-func (g *Gateway) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
+func (g *RatingGateway) PutRating(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error {
 	addrs, err := g.registry.ServiceAddresses(ctx, "rating")
 	if err != nil {
 		return err
