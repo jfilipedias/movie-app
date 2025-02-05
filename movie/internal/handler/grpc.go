@@ -17,5 +17,6 @@ func NewGrpcHandler(svc *service.MovieService) *GrpcHandler {
 }
 
 func (h *GrpcHandler) GetMovieDetails(ctx context.Context, r *gen.GetMovieDetailsRequest) (*gen.GetMovieDetailsResponse, error) {
+	
 	return nil, nil
 }
