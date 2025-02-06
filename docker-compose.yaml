@@ -1,0 +1,27 @@
+version: "3.1"
+name: "movie-api"
+
+services:
+  consul:
+    image: hashicorp/consul:latest
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    command: "agent -server-ui -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0"
+  mysql:
+    platform: linux/x86_64
+    image: mysql:8.0.40-debian
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: movie
+      MYSQL_USER: local_user
+      MYSQL_PASSWORD: local_password
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - ./mysql-init:/docker-entrypoint-initdb.d
